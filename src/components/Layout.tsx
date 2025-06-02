@@ -12,7 +12,8 @@ import {
   Bell, 
   User, 
   LogOut,
-  ChevronDown
+  ChevronDown,
+  ShoppingCart
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useProducts } from '../context/ProductContext';
@@ -25,6 +26,7 @@ const BottomNav = () => {
   const navItems = [
     { name: 'Dashboard', path: '/', icon: <LayoutDashboard size={20} />, roles: ['admin', 'manager', 'staff'] },
     { name: 'Products', path: '/products', icon: <Package size={20} />, roles: ['admin', 'manager', 'staff'] },
+    { name: 'Sales', path: '/sales', icon: <ShoppingCart size={20} />, roles: ['admin', 'manager', 'staff'] },
     { name: 'Suppliers', path: '/suppliers', icon: <Truck size={20} />, roles: ['admin', 'manager'] },
     { name: 'Reports', path: '/reports', icon: <FileBarChart size={20} />, roles: ['admin', 'manager'] },
     { name: 'Users', path: '/users', icon: <Users size={20} />, roles: ['admin'] },
