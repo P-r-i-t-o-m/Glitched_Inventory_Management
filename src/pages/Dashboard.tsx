@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Package, AlertTriangle, TrendingUp, BarChart4, ArrowRight } from 'lucide-react';
 import { useProducts } from '../context/ProductContext';
+import { useUsers } from '../context/UserContext';
 import { categories } from '../data/initialData';
 import { useSales } from '../context/SalesContext';
 import { format } from 'date-fns';
