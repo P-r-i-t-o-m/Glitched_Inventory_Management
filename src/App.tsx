@@ -19,6 +19,7 @@ import { AuthProvider } from './context/AuthContext';
 import { ProductProvider } from './context/ProductContext';
 import { SupplierProvider } from './context/SupplierContext';
 import { UserProvider } from './context/UserContext';
+import { SalesProvider } from './context/SalesContext';
 
 // Protected route component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -38,26 +39,28 @@ function App() {
         <UserProvider>
           <SupplierProvider>
             <ProductProvider>
-              <Toaster position="top-right" />
-              <Routes>
-                <Route path="/login" element={<LoginPage />} />
-                <Route 
-                  path="/" 
-                  element={
-                    <ProtectedRoute>
-                      <Layout />
-                    </ProtectedRoute>
-                  }
-                >
-                  <Route index element={<Dashboard />} />
-                  <Route path="products" element={<ProductsPage />} />
-                  <Route path="suppliers" element={<SuppliersPage />} />
-                  <Route path="reports" element={<ReportsPage />} />
-                  <Route path="users" element={<UsersPage />} />
-                  <Route path="settings" element={<SettingsPage />} />
-                </Route>
-                <Route path="*" element={<Navigate to="/" replace />} />
-              </Routes>
+              <SalesProvider>
+                <Toaster position="top-right" />
+                <Routes>
+                  <Route path="/login" element={<LoginPage />} />
+                  <Route 
+                    path="/" 
+                    element={
+                      <ProtectedRoute>
+                        <Layout />
+                      </ProtectedRoute>
+                    }
+                  >
+                    <Route index element={<Dashboard />} />
+                    <Route path="products" element={<ProductsPage />} />
+                    <Route path="suppliers" element={<SuppliersPage />} />
+                    <Route path="reports" element={<ReportsPage />} />
+                    <Route path="users" element={<UsersPage />} />
+                    <Route path="settings" element={<SettingsPage />} />
+                  </Route>
+                  <Route path="*" element={<Navigate to="/\" replace />} />
+                </Routes>
+              </SalesProvider>
             </ProductProvider>
           </SupplierProvider>
         </UserProvider>

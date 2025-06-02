@@ -12,6 +12,16 @@ export interface Product {
   updatedAt: string;
 }
 
+export interface SoldProduct {
+  id: string;
+  productId: string;
+  quantity: number;
+  price: number;
+  totalPrice: number;
+  soldBy: string;
+  soldAt: string;
+}
+
 export interface Supplier {
   id: string;
   name: string;
@@ -415,5 +425,35 @@ export const initialUsers: User[] = [
     role: 'staff',
     lastLogin: '2025-05-21T16:30:00Z',
     createdAt: '2025-01-15T13:15:00Z'
+  }
+];
+
+export const initialSoldProducts: SoldProduct[] = [
+  {
+    id: '1',
+    productId: '1',
+    quantity: 2,
+    price: 12500,
+    totalPrice: 25000,
+    soldBy: '1',
+    soldAt: '2025-05-01T10:30:00Z'
+  },
+  {
+    id: '2',
+    productId: '2',
+    quantity: 1,
+    price: 15800,
+    totalPrice: 15800,
+    soldBy: '2',
+    soldAt: '2025-05-02T14:15:00Z'
+  },
+  {
+    id: '3',
+    productId: '3',
+    quantity: 3,
+    price: 23500,
+    totalPrice: 70500,
+    soldBy: '1',
+    soldAt: '2025-05-03T09:45:00Z'
   }
 ];

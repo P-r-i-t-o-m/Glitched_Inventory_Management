@@ -1,144 +1,123 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { initialSales, initialProducts, Sale } from '../data/initialData';
 import { v4 as uuidv4 } from 'uuid';
+import { format } from 'date-fns';
+import { initialSoldProducts, SoldProduct } from '../data/initialData';
 import { useAuth } from './AuthContext';
 import { useProducts } from './ProductContext';
 import toast from 'react-hot-toast';
 
 interface SalesContextType {
-  sales: Sale[];
-  addSale: (sale: Omit<Sale, 'id' | 'soldAt' | 'soldBy'>) => void;
-  getSalesByDateRange: (startDate: string, endDate: string) => Sale[];
-  getSalesByProduct: (productId: string) => Sale[];
+  soldProducts: SoldProduct[];
+  addSale: (productId: string, quantity: number, price: number) => void;
+  getSalesByDateRange: (startDate: string, endDate: string) => SoldProduct[];
+  getSalesByProduct: (productId: string) => SoldProduct[];
   getSalesStats: () => {
     totalSales: number;
     totalRevenue: number;
     averageOrderValue: number;
-    topSellingProducts: Array<{
-      productId: string;
-      name: string;
-      totalQuantity: number;
-      totalRevenue: number;
-    }>;
+    monthlySales: { [key: string]: { count: number; revenue: number } };
   };
 }
 
 const SalesContext = createContext<SalesContextType | undefined>(undefined);
 
 export const SalesProvider = ({ children }: { children: ReactNode }) => {
-  const [sales, setSales] = useState<Sale[]>([]);
+  const [soldProducts, setSoldProducts] = useState<SoldProduct[]>([]);
   const { currentUser } = useAuth();
   const { products, updateProduct } = useProducts();
 
   useEffect(() => {
-    const storedSales = localStorage.getItem('sales');
+    const storedSales = localStorage.getItem('soldProducts');
     if (storedSales) {
-      setSales(JSON.parse(storedSales));
+      setSoldProducts(JSON.parse(storedSales));
     } else {
-      setSales(initialSales);
-      localStorage.setItem('sales', JSON.stringify(initialSales));
+      setSoldProducts(initialSoldProducts);
+      localStorage.setItem('soldProducts', JSON.stringify(initialSoldProducts));
     }
   }, []);
 
-  const saveSales = (updatedSales: Sale[]) => {
-    setSales(updatedSales);
-    localStorage.setItem('sales', JSON.stringify(updatedSales));
+  const saveSales = (updatedSales: SoldProduct[]) => {
+    setSoldProducts(updatedSales);
+    localStorage.setItem('soldProducts', JSON.stringify(updatedSales));
   };
 
-  const addSale = (sale: Omit<Sale, 'id' | 'soldAt' | 'soldBy'>) => {
-    // Check if user is authorized
+  const addSale = (productId: string, quantity: number, price: number) => {
     if (!currentUser) {
       toast.error('You must be logged in to record a sale');
       return;
     }
 
-    // Check if product exists and has enough stock
-    const product = products.find(p => p.id === sale.productId);
+    const product = products.find(p => p.id === productId);
     if (!product) {
       toast.error('Product not found');
       return;
     }
 
-    if (product.quantity < sale.quantity) {
+    if (product.quantity < quantity) {
       toast.error('Not enough stock available');
       return;
     }
 
-    // Create new sale record
-    const newSale: Sale = {
+    const totalPrice = price * quantity;
+    const newSale: SoldProduct = {
       id: uuidv4(),
-      ...sale,
+      productId,
+      quantity,
+      price,
+      totalPrice,
       soldBy: currentUser.id,
       soldAt: new Date().toISOString()
     };
 
     // Update product quantity
-    updateProduct(product.id, {
-      quantity: product.quantity - sale.quantity
+    updateProduct(productId, {
+      quantity: product.quantity - quantity
     });
 
     // Save sale
-    const updatedSales = [...sales, newSale];
+    const updatedSales = [...soldProducts, newSale];
     saveSales(updatedSales);
     toast.success('Sale recorded successfully');
   };
 
   const getSalesByDateRange = (startDate: string, endDate: string) => {
-    return sales.filter(sale => {
+    return soldProducts.filter(sale => {
       const saleDate = new Date(sale.soldAt);
       return saleDate >= new Date(startDate) && saleDate <= new Date(endDate);
     });
   };
 
   const getSalesByProduct = (productId: string) => {
-    return sales.filter(sale => sale.productId === productId);
+    return soldProducts.filter(sale => sale.productId === productId);
   };
 
   const getSalesStats = () => {
-    const totalSales = sales.length;
-    const totalRevenue = sales.reduce((sum, sale) => sum + sale.totalPrice, 0);
+    const totalSales = soldProducts.length;
+    const totalRevenue = soldProducts.reduce((sum, sale) => sum + sale.totalPrice, 0);
     const averageOrderValue = totalRevenue / totalSales || 0;
 
-    // Calculate top selling products
-    const productSales = sales.reduce((acc, sale) => {
-      const existing = acc.find(p => p.productId === sale.productId);
-      if (existing) {
-        existing.totalQuantity += sale.quantity;
-        existing.totalRevenue += sale.totalPrice;
-      } else {
-        const product = products.find(p => p.id === sale.productId);
-        if (product) {
-          acc.push({
-            productId: sale.productId,
-            name: product.name,
-            totalQuantity: sale.quantity,
-            totalRevenue: sale.totalPrice
-          });
-        }
+    // Calculate monthly sales
+    const monthlySales: { [key: string]: { count: number; revenue: number } } = {};
+    soldProducts.forEach(sale => {
+      const monthKey = format(new Date(sale.soldAt), 'yyyy-MM');
+      if (!monthlySales[monthKey]) {
+        monthlySales[monthKey] = { count: 0, revenue: 0 };
       }
-      return acc;
-    }, [] as Array<{
-      productId: string;
-      name: string;
-      totalQuantity: number;
-      totalRevenue: number;
-    }>);
-
-    const topSellingProducts = productSales
-      .sort((a, b) => b.totalQuantity - a.totalQuantity)
-      .slice(0, 5);
+      monthlySales[monthKey].count += 1;
+      monthlySales[monthKey].revenue += sale.totalPrice;
+    });
 
     return {
       totalSales,
       totalRevenue,
       averageOrderValue,
-      topSellingProducts
+      monthlySales
     };
   };
 
   return (
     <SalesContext.Provider value={{
-      sales,
+      soldProducts,
       addSale,
       getSalesByDateRange,
       getSalesByProduct,
