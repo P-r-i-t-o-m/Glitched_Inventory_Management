@@ -2,6 +2,8 @@ import { Link } from 'react-router-dom';
 import { Package, AlertTriangle, TrendingUp, BarChart4, ArrowRight } from 'lucide-react';
 import { useProducts } from '../context/ProductContext';
 import { categories } from '../data/initialData';
+import { useSales } from '../context/SalesContext';
+import { format } from 'date-fns';
 
 const DashboardCard = ({ title, value, icon, color, onClick }: { 
   title: string;
@@ -121,7 +123,6 @@ const LowStockProducts = () => {
 const RecentProducts = () => {
   const { products } = useProducts();
   
-  // Sort products by creation date (newest first) and take the first 5
   const recentProducts = [...products]
     .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
     .slice(0, 5);
@@ -165,6 +166,74 @@ const RecentProducts = () => {
           </tbody>
         </table>
       </div>
+    </div>
+  );
+};
+
+const SoldOutProducts = () => {
+  const { soldProducts } = useSales();
+  const { products } = useProducts();
+  const { users } = useUsers();
+  
+  const recentSoldProducts = [...soldProducts]
+    .sort((a, b) => new Date(b.soldAt).getTime() - new Date(a.soldAt).getTime())
+    .slice(0, 5);
+  
+  const getProductName = (productId: string) => {
+    const product = products.find(p => p.id === productId);
+    return product ? product.name : 'Unknown Product';
+  };
+  
+  const getSellerName = (userId: string) => {
+    const user = users.find(u => u.id === userId);
+    return user ? user.name : 'Unknown User';
+  };
+
+  return (
+    <div className="card p-6">
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-lg font-semibold text-[var(--neutral-800)]">Recent Sales</h2>
+        <Link to="/reports" className="text-[var(--primary-500)] hover:text-[var(--primary-700)] text-sm flex items-center">
+          View All <ArrowRight size={14} className="ml-1" />
+        </Link>
+      </div>
+      
+      {recentSoldProducts.length > 0 ? (
+        <div className="space-y-4">
+          {recentSoldProducts.map((sale) => (
+            <div key={sale.id} className="border border-[var(--neutral-200)] rounded-lg p-4">
+              <div className="flex justify-between items-start mb-2">
+                <div>
+                  <h3 className="font-medium text-[var(--neutral-800)]">{getProductName(sale.productId)}</h3>
+                  <p className="text-sm text-[var(--neutral-600)]">
+                    Sold by {getSellerName(sale.soldBy)} • {format(new Date(sale.soldAt), 'MMM dd, yyyy HH:mm')}
+                  </p>
+                </div>
+                <span className="text-lg font-semibold text-[var(--primary-700)]">
+                  ৳{sale.totalPrice.toLocaleString()}
+                </span>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4 mt-3 text-sm">
+                <div>
+                  <p className="text-[var(--neutral-500)]">Customer</p>
+                  <p className="font-medium text-[var(--neutral-700)]">{sale.customerName}</p>
+                  <p className="text-[var(--neutral-600)]">{sale.customerPhone}</p>
+                </div>
+                <div>
+                  <p className="text-[var(--neutral-500)]">Details</p>
+                  <p className="text-[var(--neutral-600)]">Quantity: {sale.quantity}</p>
+                  <p className="text-[var(--neutral-600)]">Unit Price: ৳{sale.price.toLocaleString()}</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="flex items-center justify-center py-8 text-[var(--neutral-500)]">
+          <p>No sales recorded yet</p>
+        </div>
+      )}
     </div>
   );
 };
@@ -218,6 +287,7 @@ const Dashboard = () => {
       
       <div className="grid grid-cols-1 gap-6">
         <LowStockProducts />
+        <SoldOutProducts />
       </div>
     </div>
   );

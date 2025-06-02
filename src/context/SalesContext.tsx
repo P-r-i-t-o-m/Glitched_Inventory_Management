@@ -8,7 +8,15 @@ import toast from 'react-hot-toast';
 
 interface SalesContextType {
   soldProducts: SoldProduct[];
-  addSale: (productId: string, quantity: number, price: number) => void;
+  addSale: (
+    productId: string,
+    quantity: number,
+    price: number,
+    customerName: string,
+    customerPhone: string,
+    customerEmail: string,
+    customerAddress: string
+  ) => void;
   getSalesByDateRange: (startDate: string, endDate: string) => SoldProduct[];
   getSalesByProduct: (productId: string) => SoldProduct[];
   getSalesStats: () => {
@@ -41,7 +49,15 @@ export const SalesProvider = ({ children }: { children: ReactNode }) => {
     localStorage.setItem('soldProducts', JSON.stringify(updatedSales));
   };
 
-  const addSale = (productId: string, quantity: number, price: number) => {
+  const addSale = (
+    productId: string,
+    quantity: number,
+    price: number,
+    customerName: string,
+    customerPhone: string,
+    customerEmail: string,
+    customerAddress: string
+  ) => {
     if (!currentUser) {
       toast.error('You must be logged in to record a sale');
       return;
@@ -66,7 +82,11 @@ export const SalesProvider = ({ children }: { children: ReactNode }) => {
       price,
       totalPrice,
       soldBy: currentUser.id,
-      soldAt: new Date().toISOString()
+      soldAt: new Date().toISOString(),
+      customerName,
+      customerPhone,
+      customerEmail,
+      customerAddress
     };
 
     // Update product quantity

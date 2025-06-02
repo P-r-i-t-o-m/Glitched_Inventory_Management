@@ -20,6 +20,10 @@ export interface SoldProduct {
   totalPrice: number;
   soldBy: string;
   soldAt: string;
+  customerName: string;
+  customerPhone: string;
+  customerEmail: string;
+  customerAddress: string;
 }
 
 export interface Supplier {
@@ -435,8 +439,12 @@ export const initialSoldProducts: SoldProduct[] = [
     quantity: 2,
     price: 12500,
     totalPrice: 25000,
-    soldBy: '1',
-    soldAt: '2025-05-01T10:30:00Z'
+    soldBy: '3',
+    soldAt: '2025-05-01T10:30:00Z',
+    customerName: 'Rakib Hassan',
+    customerPhone: '+8801712345678',
+    customerEmail: 'rakib@example.com',
+    customerAddress: '123/A, Gulshan Avenue, Dhaka-1212, Bangladesh'
   },
   {
     id: '2',
@@ -444,8 +452,12 @@ export const initialSoldProducts: SoldProduct[] = [
     quantity: 1,
     price: 15800,
     totalPrice: 15800,
-    soldBy: '2',
-    soldAt: '2025-05-02T14:15:00Z'
+    soldBy: '4',
+    soldAt: '2025-05-02T14:15:00Z',
+    customerName: 'Sadia Rahman',
+    customerPhone: '+8801812345678',
+    customerEmail: 'sadia@example.com',
+    customerAddress: '45/B, Banani DOHS, Dhaka-1213, Bangladesh'
   },
   {
     id: '3',
@@ -453,7 +465,11 @@ export const initialSoldProducts: SoldProduct[] = [
     quantity: 3,
     price: 23500,
     totalPrice: 70500,
-    soldBy: '1',
-    soldAt: '2025-05-03T09:45:00Z'
+    soldBy: '3',
+    soldAt: '2025-05-03T09:45:00Z',
+    customerName: 'Kamal Hossain',
+    customerPhone: '+8801912345678',
+    customerEmail: 'kamal@example.com',
+    customerAddress: '78/C, Bashundhara R/A, Dhaka-1229, Bangladesh'
   }
 ];
