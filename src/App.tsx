@@ -10,6 +10,7 @@ import ReportsPage from './pages/ReportsPage';
 import UsersPage from './pages/UsersPage';
 import SettingsPage from './pages/SettingsPage';
 import LoginPage from './pages/LoginPage';
+import SalesPage from './pages/SalesPage';
 
 // Components
 import Layout from './components/Layout';
@@ -53,6 +54,7 @@ function App() {
                   >
                     <Route index element={<Dashboard />} />
                     <Route path="products" element={<ProductsPage />} />
+                    <Route path="sales" element={<SalesPage />} />
                     <Route path="suppliers" element={<SuppliersPage />} />
                     <Route path="reports" element={<ReportsPage />} />
                     <Route path="users" element={<UsersPage />} />
