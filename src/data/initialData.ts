@@ -416,7 +416,7 @@ export const initialUsers: User[] = [
   },
   {
     id: '3',
-    name: 'Staff One',
+    name: 'Robin',
     email: 'staff1@glitched.com',
     role: 'staff',
     lastLogin: '2025-05-22T09:45:00Z',
@@ -424,7 +424,7 @@ export const initialUsers: User[] = [
   },
   {
     id: '4',
-    name: 'Staff Two',
+    name: 'Salman',
     email: 'staff2@glitched.com',
     role: 'staff',
     lastLogin: '2025-05-21T16:30:00Z',
@@ -462,9 +462,9 @@ export const initialSoldProducts: SoldProduct[] = [
   {
     id: '3',
     productId: '3',
-    quantity: 3,
+    quantity: 1,
     price: 23500,
-    totalPrice: 70500,
+    totalPrice: 23500,
     soldBy: '3',
     soldAt: '2025-05-03T09:45:00Z',
     customerName: 'Kamal Hossain',
