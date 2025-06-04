@@ -34,6 +34,10 @@ interface ProductFormData {
 
 interface SaleFormData {
   quantity: number;
+  customerName: string;
+  customerPhone: string;
+  customerEmail: string;
+  customerAddress: string;
 }
 
 interface SortConfig {
@@ -72,7 +76,11 @@ const ProductsPage = () => {
   });
 
   const [saleData, setSaleData] = useState<SaleFormData>({
-    quantity: 1
+    quantity: 1,
+    customerName: '',
+    customerPhone: '',
+    customerEmail: '',
+    customerAddress: ''
   });
   
   const [sortConfig, setSortConfig] = useState<SortConfig>({
@@ -155,7 +163,11 @@ const ProductsPage = () => {
   // Reset sale data
   const resetSaleData = () => {
     setSaleData({
-      quantity: 1
+      quantity: 1,
+      customerName: '',
+      customerPhone: '',
+      customerEmail: '',
+      customerAddress: ''
     });
   };
   
@@ -205,7 +217,7 @@ const ProductsPage = () => {
     const { name, value } = e.target;
     setSaleData({
       ...saleData,
-      [name]: parseInt(value)
+      [name]: name === 'quantity' ? parseInt(value) : value
     });
   };
   
@@ -274,10 +286,10 @@ const ProductsPage = () => {
         product.id,
         saleData.quantity,
         product.price,
-        currentUser?.name || '',
-        currentUser?.email || '',
-        '',
-        ''
+        saleData.customerName,
+        saleData.customerPhone,
+        saleData.customerEmail,
+        saleData.customerAddress
       );
       
       setShowSaleModal(false);
@@ -998,6 +1010,64 @@ const ProductsPage = () => {
                     value={saleData.quantity}
                     onChange={handleSaleInputChange}
                     required
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="customerName" className="form-label">
+                    Customer Name *
+                  </label>
+                  <input
+                    id="customerName"
+                    name="customerName"
+                    type="text"
+                    className="form-input"
+                    value={saleData.customerName}
+                    onChange={handleSaleInputChange}
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="customerPhone" className="form-label">
+                    Customer Phone *
+                  </label>
+                  <input
+                    id="customerPhone"
+                    name="customerPhone"
+                    type="text"
+                    className="form-input"
+                    value={saleData.customerPhone}
+                    onChange={handleSaleInputChange}
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="customerEmail" className="form-label">
+                    Customer Email
+                  </label>
+                  <input
+                    id="customerEmail"
+                    name="customerEmail"
+                    type="email"
+                    className="form-input"
+                    value={saleData.customerEmail}
+                    onChange={handleSaleInputChange}
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="customerAddress" className="form-label">
+                    Customer Address
+                  </label>
+                  <input
+                    id="customerAddress"
+                    name="customerAddress"
+                    type="text"
+                    className="form-input"
+                    value={saleData.customerAddress}
+                    onChange={handleSaleInputChange}
                   />
                 </div>
 
