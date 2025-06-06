@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Package, AlertTriangle, TrendingUp, BarChart4, ArrowRight } from 'lucide-react';
+import { Package, AlertTriangle, TrendingUp, BarChart4, ArrowRight, DollarSign, ShoppingBag } from 'lucide-react';
 import { useProducts } from '../context/ProductContext';
 import { useUsers } from '../context/UserContext';
 import { categories } from '../data/initialData';
@@ -171,7 +171,7 @@ const RecentProducts = () => {
   );
 };
 
-const SoldOutProducts = () => {
+const RecentSales = () => {
   const { soldProducts } = useSales();
   const { products } = useProducts();
   const { users } = useUsers();
@@ -194,7 +194,7 @@ const SoldOutProducts = () => {
     <div className="card p-6">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-lg font-semibold text-[var(--neutral-800)]">Recent Sales</h2>
-        <Link to="/reports" className="text-[var(--primary-500)] hover:text-[var(--primary-700)] text-sm flex items-center">
+        <Link to="/sales" className="text-[var(--primary-500)] hover:text-[var(--primary-700)] text-sm flex items-center">
           View All <ArrowRight size={14} className="ml-1" />
         </Link>
       </div>
@@ -241,8 +241,16 @@ const SoldOutProducts = () => {
 
 const Dashboard = () => {
   const { products, getProductStats, getLowStockProducts } = useProducts();
-  const { totalProducts, totalValue, categoryCounts } = getProductStats();
+  const { getSalesStats } = useSales();
+  const { totalProducts, categoryCounts } = getProductStats();
+  const { totalRevenue } = getSalesStats();
   const lowStockProducts = getLowStockProducts();
+  
+  // Calculate current inventory value (products currently in stock)
+  const currentInventoryValue = products.reduce((sum, product) => sum + (product.price * product.quantity), 0);
+  
+  // Calculate total sales value (products sold)
+  const totalSalesValue = totalRevenue;
   
   return (
     <div className="space-y-6 animate-fade-in">
@@ -264,17 +272,56 @@ const Dashboard = () => {
           color="bg-[var(--warning-50)]"
         />
         <DashboardCard
-          title="Inventory Value"
-          value={`৳${totalValue.toLocaleString()}`}
+          title="Current Inventory Value"
+          value={`৳${currentInventoryValue.toLocaleString()}`}
           icon={<TrendingUp size={24} className="text-[var(--success-500)]" />}
           color="bg-[var(--success-50)]"
         />
         <DashboardCard
-          title="Categories"
-          value={categories.length}
-          icon={<BarChart4 size={24} className="text-[var(--accent-500)]" />}
+          title="Total Sales Value"
+          value={`৳${totalSalesValue.toLocaleString()}`}
+          icon={<DollarSign size={24} className="text-[var(--accent-500)]" />}
           color="bg-[var(--accent-50)]"
         />
+      </div>
+
+      {/* Inventory Overview Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="card p-6">
+          <div className="flex items-center mb-4">
+            <div className="rounded-full p-3 bg-[var(--success-50)] text-[var(--success-700)] mr-4">
+              <ShoppingBag size={24} />
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold text-[var(--neutral-800)]">Products in Stock</h3>
+              <p className="text-sm text-[var(--neutral-600)]">Current inventory value</p>
+            </div>
+          </div>
+          <div className="text-3xl font-bold text-[var(--success-700)] mb-2">
+            ৳{currentInventoryValue.toLocaleString()}
+          </div>
+          <div className="text-sm text-[var(--neutral-600)]">
+            {products.filter(p => p.quantity > 0).length} products with stock
+          </div>
+        </div>
+
+        <div className="card p-6">
+          <div className="flex items-center mb-4">
+            <div className="rounded-full p-3 bg-[var(--primary-50)] text-[var(--primary-700)] mr-4">
+              <DollarSign size={24} />
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold text-[var(--neutral-800)]">Products Sold</h3>
+              <p className="text-sm text-[var(--neutral-600)]">Total sales revenue</p>
+            </div>
+          </div>
+          <div className="text-3xl font-bold text-[var(--primary-700)] mb-2">
+            ৳{totalSalesValue.toLocaleString()}
+          </div>
+          <div className="text-sm text-[var(--neutral-600)]">
+            Revenue from all sales
+          </div>
+        </div>
       </div>
       
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -288,7 +335,7 @@ const Dashboard = () => {
       
       <div className="grid grid-cols-1 gap-6">
         <LowStockProducts />
-        <SoldOutProducts />
+        <RecentSales />
       </div>
     </div>
   );
