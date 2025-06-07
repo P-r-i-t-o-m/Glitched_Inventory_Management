@@ -403,6 +403,7 @@ export const initialUsers: User[] = [
     name: 'Tanmay Das',
     email: 'admin@glitched.com',
     role: 'admin',
+    avatar: 'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2',
     lastLogin: '2025-05-22T08:30:00Z',
     createdAt: '2025-01-01T09:00:00Z'
   },
@@ -411,6 +412,7 @@ export const initialUsers: User[] = [
     name: 'Pritom',
     email: 'manager@glitched.com',
     role: 'manager',
+    avatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2',
     lastLogin: '2025-05-21T14:15:00Z',
     createdAt: '2025-01-05T10:30:00Z'
   },
@@ -419,6 +421,7 @@ export const initialUsers: User[] = [
     name: 'Robin',
     email: 'staff1@glitched.com',
     role: 'staff',
+    avatar: 'https://images.pexels.com/photos/1681010/pexels-photo-1681010.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2',
     lastLogin: '2025-05-22T09:45:00Z',
     createdAt: '2025-01-10T11:45:00Z'
   },
@@ -427,6 +430,7 @@ export const initialUsers: User[] = [
     name: 'Salman',
     email: 'staff2@glitched.com',
     role: 'staff',
+    avatar: 'https://images.pexels.com/photos/1043471/pexels-photo-1043471.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2',
     lastLogin: '2025-05-21T16:30:00Z',
     createdAt: '2025-01-15T13:15:00Z'
   }
