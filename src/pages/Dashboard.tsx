@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Package, AlertTriangle, TrendingUp, BarChart4, ArrowRight } from 'lucide-react';
+import { Package, AlertTriangle, TrendingUp, BarChart4, ArrowRight, DollarSign, ShoppingBag } from 'lucide-react';
 import { useProducts } from '../context/ProductContext';
 import { useUsers } from '../context/UserContext';
 import { categories } from '../data/initialData';
@@ -194,7 +194,7 @@ const SoldOutProducts = () => {
     <div className="card p-6">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-lg font-semibold text-[var(--neutral-800)]">Recent Sales</h2>
-        <Link to="/reports" className="text-[var(--primary-500)] hover:text-[var(--primary-700)] text-sm flex items-center">
+        <Link to="/sales" className="text-[var(--primary-500)] hover:text-[var(--primary-700)] text-sm flex items-center">
           View All <ArrowRight size={14} className="ml-1" />
         </Link>
       </div>
@@ -240,9 +240,15 @@ const SoldOutProducts = () => {
 };
 
 const Dashboard = () => {
-  const { products, getProductStats, getLowStockProducts } = useProducts();
-  const { totalProducts, totalValue, categoryCounts } = getProductStats();
+  const { products, getLowStockProducts } = useProducts();
+  const { getSalesStats } = useSales();
   const lowStockProducts = getLowStockProducts();
+  
+  // Calculate current inventory value (products in stock)
+  const currentInventoryValue = products.reduce((sum, product) => sum + (product.price * product.quantity), 0);
+  
+  // Get sales statistics
+  const { totalRevenue } = getSalesStats();
   
   return (
     <div className="space-y-6 animate-fade-in">
@@ -250,10 +256,10 @@ const Dashboard = () => {
         <h1 className="text-2xl font-bold text-[var(--neutral-800)]">Dashboard</h1>
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
         <DashboardCard
           title="Total Products"
-          value={totalProducts}
+          value={products.length}
           icon={<Package size={24} className="text-[var(--primary-500)]" />}
           color="bg-[var(--primary-50)]"
         />
@@ -264,16 +270,22 @@ const Dashboard = () => {
           color="bg-[var(--warning-50)]"
         />
         <DashboardCard
-          title="Inventory Value"
-          value={`৳${totalValue.toLocaleString()}`}
+          title="Current Inventory Value"
+          value={`৳${currentInventoryValue.toLocaleString()}`}
           icon={<TrendingUp size={24} className="text-[var(--success-500)]" />}
           color="bg-[var(--success-50)]"
         />
         <DashboardCard
+          title="Total Sales Revenue"
+          value={`৳${totalRevenue.toLocaleString()}`}
+          icon={<DollarSign size={24} className="text-[var(--accent-500)]" />}
+          color="bg-[var(--accent-50)]"
+        />
+        <DashboardCard
           title="Categories"
           value={categories.length}
-          icon={<BarChart4 size={24} className="text-[var(--accent-500)]" />}
-          color="bg-[var(--accent-50)]"
+          icon={<BarChart4 size={24} className="text-[var(--neutral-500)]" />}
+          color="bg-[var(--neutral-50)]"
         />
       </div>
       
